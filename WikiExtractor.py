@@ -46,6 +46,23 @@ This version performs template expansion by preprocesssng the whole dump and
 collecting template definitions.
 """
 
+
+#===========================================================================
+
+'''
+This software is modified by Motaz Saad to add interlanguage links extraction function.
+
+'''
+
+import imp
+tp = imp.load_source('textpro', 'textpro.py') # can be obtained from https://github.com/motazsaad/comparable-text-miner
+
+
+#===========================================================================
+
+
+
+
 import sys, os.path, time
 import re                       # TODO use regex when it will be standard
 import argparse, random
@@ -1858,6 +1875,14 @@ def clean(extractor, text):
     Transforms wiki markup.
     @see https://www.mediawiki.org/wiki/Help:Formatting
     """
+    
+    ########################################################
+    # this code snippet is added by Motaz Saad
+    ilinks = tp.get_interlanguage_links()
+    ilinks_text = '\n'
+    for link in ilinks:
+    	ilinks_text += link + '\n'
+    ########################################################
 
     if (expand_templates):
         # expand templates
@@ -1953,6 +1978,11 @@ def clean(extractor, text):
     text = re.sub(u'(\[\(Â«) ', r'\1', text)
     text = re.sub(r'\n\W+?\n', '\n', text, flags=re.U) # lines with only punctuations
     text = text.replace(',,', ',').replace(',.', '.')
+    
+    ########################################################
+    # this code snippet is added by Motaz Saad
+    text += ilinks_text
+    ########################################################
 
     return text
 
